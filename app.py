@@ -33,27 +33,31 @@ st.set_page_config(
 # Inject modern styling via CSS
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     
     html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
     .main-title {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 0px;
-        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #7c3aed 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 4px;
+        letter-spacing: -0.03em;
     }
     
     .subtitle {
-        font-size: 1rem;
+        font-size: 1.1rem;
         color: #64748b;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
     }
     
-    /* KPI Card styling */
+    /* Premium KPI Card styling */
     .kpi-container {
         display: flex;
         gap: 16px;
@@ -64,32 +68,50 @@ st.markdown("""
         flex: 1;
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 24px 20px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02), inset 0 2px 4px 0 rgba(255,255,255,0.8);
         text-align: center;
-        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: transparent;
+        transition: background-color 0.3s ease;
     }
     
     .kpi-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         border-color: #cbd5e1;
+    }
+    
+    .kpi-card:hover::before {
+        background: linear-gradient(90deg, #3b82f6, #7c3aed);
     }
     
     .kpi-header {
         font-size: 0.75rem;
-        font-weight: 600;
+        font-weight: 700;
         color: #64748b;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 8px;
+        letter-spacing: 0.08em;
+        margin-bottom: 10px;
     }
     
     .kpi-value {
-        font-size: 1.75rem;
+        font-size: 2.1rem;
         font-weight: 800;
         color: #0f172a;
+        letter-spacing: -0.02em;
     }
     
     .kpi-highlight-blue { color: #2563eb; }
@@ -99,57 +121,84 @@ st.markdown("""
     
     .reliability-badge {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 6px 14px;
         border-radius: 9999px;
-        font-size: 0.875rem;
-        font-weight: 700;
+        font-size: 0.8rem;
+        font-weight: 800;
         text-transform: uppercase;
+        letter-spacing: 0.05em;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.02);
     }
-    .rel-high { background-color: #d1fae5; color: #065f46; }
-    .rel-medium { background-color: #fef3c7; color: #92400e; }
-    .rel-low { background-color: #fee2e2; color: #991b1b; }
-    .rel-limited-by-source-data-quality { background-color: #fee2e2; color: #991b1b; font-size: 0.7rem !important; }
+    .rel-high { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .rel-medium { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .rel-low { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .rel-limited-by-source-data-quality { background-color: #fef2f2; color: #b91c1c; font-size: 0.725rem !important; border: 1px solid #fca5a5; }
     
     /* Recommendations styling */
     .rec-card {
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 16px;
-        background-color: #f8fafc;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 18px;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
         border-left: 6px solid #64748b;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .rec-card:hover {
-        transform: translateX(4px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transform: translateX(6px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+        border-color: #cbd5e1;
     }
     
-    .rec-critical { border-left-color: #ef4444; background-color: #fef2f2; }
-    .rec-high { border-left-color: #f59e0b; background-color: #fffbeb; }
-    .rec-medium { border-left-color: #3b82f6; background-color: #eff6ff; }
-    .rec-low { border-left-color: #10b981; background-color: #f0fdf4; }
+    .rec-critical { border-left-color: #ef4444; background: linear-gradient(90deg, #fef2f2 0%, #ffffff 100%); }
+    .rec-high { border-left-color: #f59e0b; background: linear-gradient(90deg, #fffbeb 0%, #ffffff 100%); }
+    .rec-medium { border-left-color: #3b82f6; background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%); }
+    .rec-low { border-left-color: #10b981; background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 100%); }
     
     .rec-title {
-        font-weight: 700;
-        font-size: 1.05rem;
+        font-weight: 800;
+        font-size: 1.1rem;
         color: #0f172a;
         margin-bottom: 6px;
+        letter-spacing: -0.015em;
     }
     
     .rec-meta {
         font-size: 0.75rem;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
         color: #64748b;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
+        letter-spacing: 0.05em;
     }
     
     /* Pipeline Step visualizer */
     .step-active { color: #2563eb; font-weight: bold; }
     .step-done { color: #10b981; font-weight: bold; }
     .step-pending { color: #94a3b8; }
+    
+    /* Streamlit Button override for premium look */
+    div.stButton > button {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 28px !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3) !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+    div.stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.4) !important;
+        border: none !important;
+    }
+    div.stButton > button:active {
+        transform: translateY(0px) !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -208,19 +257,52 @@ if df_raw is not None:
     st.write("An assessment of the raw feedback file before cleaning and AI analysis. Management can review these raw anomalies to estimate raw dataset reliability.")
     
     # Row for raw data quality stats
-    col_a, col_b, col_c, col_d = st.columns(4)
-    with col_a:
-        st.metric("Total Raw Records", raw_audit['total_records'])
-        st.metric("Missing Timestamps", raw_audit['missing_timestamp_count'])
-    with col_b:
-        st.metric("Raw Dataset Health", f"{raw_audit['health_score']}%", help="Measures input file data quality and integrity (penalizing missing values, invalid timestamps, duplicates, and empty text), NOT customer satisfaction.")
-        st.metric("Missing Ratings", raw_audit['missing_rating_count'])
-    with col_c:
-        st.metric("Duplicate Rows (Exact)", raw_audit['duplicate_row_count'])
-        st.metric("Duplicate Feedback Text", raw_audit['duplicate_feedback_count'])
-    with col_d:
-        st.metric("Empty/Meaningless Reviews", raw_audit['empty_feedback_count'])
-        st.metric("Invalid Dates", raw_audit['invalid_timestamp_count'])
+    st.markdown(f"""
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 10px; margin-bottom: 16px;">
+        <div class="kpi-card">
+            <div class="kpi-header">Total Raw Records</div>
+            <div class="kpi-value kpi-highlight-blue">{raw_audit['total_records']}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Total records in file</div>
+        </div>
+        <div class="kpi-card" title="Measures input file data quality and integrity (penalizing missing values, invalid timestamps, duplicates, and empty text), NOT customer satisfaction.">
+            <div class="kpi-header">Raw Dataset Health</div>
+            <div class="kpi-value kpi-highlight-green">{raw_audit['health_score']}%</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Data Integrity Index</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-header">Duplicate Rows (Exact)</div>
+            <div class="kpi-value kpi-highlight-orange">{raw_audit['duplicate_row_count']}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Identical rows found</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-header">Empty/Meaningless Reviews</div>
+            <div class="kpi-value kpi-highlight-red">{raw_audit['empty_feedback_count']}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Meaningless feedback rows</div>
+        </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+        <div class="kpi-card">
+            <div class="kpi-header">Missing Timestamps</div>
+            <div class="kpi-value kpi-highlight-orange">{raw_audit['missing_timestamp_count']}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Null dates filled chronologically</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-header">Missing Ratings</div>
+            <div class="kpi-value kpi-highlight-orange">{raw_audit['missing_rating_count']}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Imputed ratings based on text tone</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-header">Duplicate Feedback Text</div>
+            <div class="kpi-value kpi-highlight-orange">{raw_audit['duplicate_feedback_count']}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Near-duplicates identified</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-header">Invalid Dates</div>
+            <div class="kpi-value kpi-highlight-red">{raw_audit['invalid_timestamp_count']}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Unparseable date strings</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Contradiction callout
     if raw_audit['contradiction_count'] > 0:
@@ -469,9 +551,15 @@ if df_raw is not None:
                 fig_sent = px.pie(
                     sent_df, names='index', values='Count', 
                     color='index', color_discrete_map={'Positive': '#10b981', 'Neutral': '#94a3b8', 'Negative': '#ef4444'},
-                    hole=0.4
+                    hole=0.45
                 )
-                fig_sent.update_layout(margin=dict(t=20, b=20, l=20, r=20), height=350)
+                fig_sent.update_layout(
+                    margin=dict(t=20, b=20, l=20, r=20), 
+                    height=350,
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font=dict(family="Plus Jakarta Sans, sans-serif", size=12)
+                )
                 st.plotly_chart(fig_sent, use_container_width=True)
             with col2:
                 st.write("#### Source vs Sentiment Breakdown (%)")
@@ -486,7 +574,17 @@ if df_raw is not None:
                             y=crosstab_sent_df[sent_col],
                             marker_color=color
                         ))
-                fig_src_sent.update_layout(barmode='stack', margin=dict(t=20, b=20, l=20, r=20), height=350, yaxis_title="% Percent")
+                fig_src_sent.update_layout(
+                    barmode='stack', 
+                    margin=dict(t=20, b=20, l=20, r=20), 
+                    height=350, 
+                    yaxis_title="% Percent",
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font=dict(family="Plus Jakarta Sans, sans-serif", size=11)
+                )
+                fig_src_sent.update_xaxes(showgrid=False)
+                fig_src_sent.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#f1f5f9')
                 st.plotly_chart(fig_src_sent, use_container_width=True)
                 
         # Tab 2: Category
@@ -499,10 +597,19 @@ if df_raw is not None:
                 cat_df = cat_df.sort_values('Count', ascending=True)
                 fig_cat = px.bar(
                     cat_df, x='Count', y='index', orientation='h',
-                    color='index', color_discrete_sequence=px.colors.qualitative.Safe,
+                    color='index', color_discrete_sequence=['#7c3aed', '#2563eb', '#10b981', '#f59e0b', '#64748b'],
                     labels={'index': 'Category'}
                 )
-                fig_cat.update_layout(margin=dict(t=20, b=20, l=20, r=20), height=350, showlegend=False)
+                fig_cat.update_layout(
+                    margin=dict(t=20, b=20, l=20, r=20), 
+                    height=350, 
+                    showlegend=False,
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font=dict(family="Plus Jakarta Sans, sans-serif", size=12)
+                )
+                fig_cat.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#f1f5f9')
+                fig_cat.update_yaxes(showgrid=False)
                 st.plotly_chart(fig_cat, use_container_width=True)
             with col2:
                 st.write("#### Source vs Category Distribution (%)")
@@ -515,6 +622,16 @@ if df_raw is not None:
                             x=crosstab_cat_df.index,
                             y=crosstab_cat_df[cat_col]
                         ))
+                fig_src_cat.update_layout(
+                    barmode='stack',
+                    margin=dict(t=20, b=20, l=20, r=20),
+                    height=350,
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font=dict(family="Plus Jakarta Sans, sans-serif", size=11)
+                )
+                fig_src_cat.update_xaxes(showgrid=False)
+                fig_src_cat.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#f1f5f9')
                 st.plotly_chart(fig_src_cat, use_container_width=True)
                 
             st.write("---")
@@ -556,15 +673,20 @@ if df_raw is not None:
                 fig_trend.update_layout(
                     margin=dict(t=20, b=20, l=20, r=20),
                     height=350,
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font=dict(family="Plus Jakarta Sans, sans-serif", size=11),
                     yaxis1=dict(
-                        title=dict(text="Negative Sentiment %", font=dict(color="#ef4444")),
-                        tickfont=dict(color="#ef4444")
+                        title=dict(text="Negative Sentiment %", font=dict(color="#ef4444", family="Plus Jakarta Sans, sans-serif")),
+                        tickfont=dict(color="#ef4444", family="Plus Jakarta Sans, sans-serif"),
+                        gridcolor='#f1f5f9'
                     ),
                     yaxis2=dict(
-                        title=dict(text="Total Volume", font=dict(color="#2563eb")),
-                        tickfont=dict(color="#2563eb"),
+                        title=dict(text="Total Volume", font=dict(color="#2563eb", family="Plus Jakarta Sans, sans-serif")),
+                        tickfont=dict(color="#2563eb", family="Plus Jakarta Sans, sans-serif"),
                         overlaying='y',
-                        side='right'
+                        side='right',
+                        gridcolor='#f1f5f9'
                     ),
                     legend=dict(x=0.01, y=0.99)
                 )
