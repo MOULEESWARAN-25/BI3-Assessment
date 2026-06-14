@@ -213,7 +213,7 @@ if df_raw is not None:
         st.metric("Total Raw Records", raw_audit['total_records'])
         st.metric("Missing Timestamps", raw_audit['missing_timestamp_count'])
     with col_b:
-        st.metric("Raw Dataset Health", f"{raw_audit['health_score']}%")
+        st.metric("Raw Dataset Health", f"{raw_audit['health_score']}%", help="Measures input file data quality and integrity (penalizing missing values, invalid timestamps, duplicates, and empty text), NOT customer satisfaction.")
         st.metric("Missing Ratings", raw_audit['missing_rating_count'])
     with col_c:
         st.metric("Duplicate Rows (Exact)", raw_audit['duplicate_row_count'])
@@ -371,10 +371,10 @@ if df_raw is not None:
             
         with cols1[3]:
             st.markdown(f"""
-            <div class="kpi-card">
+            <div class="kpi-card" title="Measures input file data quality and integrity (e.g. duplicates, missing values), NOT customer satisfaction.">
                 <div class="kpi-header">Dataset Health Score</div>
                 <div class="kpi-value kpi-highlight-green">{raw_audit['health_score']}%</div>
-                <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Deductions based on anomalies</div>
+                <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Data Quality & Integrity Index</div>
             </div>
             """, unsafe_allow_html=True)
             
