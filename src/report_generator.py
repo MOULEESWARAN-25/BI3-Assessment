@@ -61,7 +61,7 @@ def generate_markdown_report(audit_results, cleaning_log, validation_metrics, di
 | KPI | Value | Business Context |
 | :--- | :--- | :--- |
 | **Total Records (Raw)** | {total_raw} | Total tickets collected from all sources |
-| **Total Unique Complaints** | {total_cleaned} | Consolidated distinct customer complaints |
+| **Total Unique Complaint Patterns** | {total_cleaned} | Consolidated distinct customer complaint patterns |
 | **Dataset Health Score** | {audit_results['health_score']}% | Deductive measure of raw data quality |
 | **Average AI Confidence** | {round(validation_metrics['average_confidence'] * 100, 1)}% | Confidence level of the AI enrichment layer |
 | **Insight Reliability** | **{validation_metrics['insight_reliability']}** | Confidence rating of findings |
@@ -85,7 +85,7 @@ def generate_markdown_report(audit_results, cleaning_log, validation_metrics, di
 Without cleaning, management would believe there were **{total_raw}** independent complaints. After normalization and deduplication, we identified **{total_cleaned}** unique complaint patterns. This demonstrates how poor data quality can distort business decisions:
 
 - **Raw Records received:** {total_raw}
-- **Distinct Complaints identified:** {total_cleaned}
+- **Distinct Complaint Patterns identified:** {total_cleaned}
 - **Complaint Inflation Removed:** {cleaning_log['normalized_duplicates_removed']} records
 - **Overall Volume Reduction:** {reduction_pct}%
 
@@ -697,7 +697,7 @@ def generate_html_report(audit_results, cleaning_log, validation_metrics, distri
                 </div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-title">Unique Complaints</div>
+                <div class="kpi-title">Unique Complaint Patterns</div>
                 <div class="kpi-val" id="kpi-unique">-</div>
             </div>
             <div class="kpi-card">
@@ -732,7 +732,7 @@ def generate_html_report(audit_results, cleaning_log, validation_metrics, distri
                     <div class="val" id="impact-raw">-</div>
                 </div>
                 <div class="impact-subcard">
-                    <div class="lbl" style="color: #10b981;">Unique Complaints</div>
+                    <div class="lbl" style="color: #10b981;">Unique Complaint Patterns</div>
                     <div class="val" id="impact-unique" style="color: #10b981;">-</div>
                 </div>
                 <div class="impact-subcard">
