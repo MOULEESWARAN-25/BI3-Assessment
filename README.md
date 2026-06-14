@@ -80,13 +80,16 @@ graph TD
 
 ## 📊 Core Concepts & Formulas
 
-### 1. Dataset Health Score
+### 1. Dataset Health Score (Data Integrity Index)
 Traditional dashboards report raw errors (e.g. "Missing timestamps: 223"). We introduce a **Dataset Health Score (0–100%)** that translates data quality into a single executive KPI. Starting at 100, we apply deductive penalties weighted by anomaly impact:
 $$\text{Health Score} = 100 - \sum \left( \frac{\text{Anomaly Count}}{\text{Total Records}} \times 100 \times \text{Weight} \right)$$
 *Weight Constants:*
 - Empty/Meaningless Feedback: `-1.5`
 - Missing Timestamps, Invalid Timestamps, Duplicate Feedback: `-1.0`
 - Missing Ratings, Duplicate Rows: `-0.5`
+
+> [!NOTE]
+> **Important Distinction:** The Dataset Health Score strictly measures **input file quality, structural integrity, and cleanliness**; it is NOT a metric of customer satisfaction or sentiment.
 
 ### 2. AI Confidence Score & Human-in-the-Loop Validation
 AI classification is non-deterministic. For each row, the AI output includes a confidence value between `0.0` and `1.0`. The validation layer flags any records with confidence `< 0.70` as "Needs Human Review" and separates them into a dedicated review table.
@@ -104,8 +107,9 @@ Management needs to know how much they should trust recommendations. We calculat
 ## ⚙️ Design Decisions & Tradeoffs
 
 ### 1. Normalized Deduplication vs. Fuzzy Embedding Clusters
-- **Decision:** Deduplicate based on exact matching of *normalized* text (stripping order numbers, agent names, city suffix templates, and repeating exclamation marks).
-- **Tradeoff:** This method avoids complex vector database integrations or fuzzy distance parameter-tuning, while successfully collapsing the redundant tickets that cause complaint inflation (e.g. 5 tickets with the exact same complaint but different order IDs).
+- **Decision:** Consolidate near-duplicates based on exact matching of *normalized* text (stripping order numbers, agent names, city suffix templates, and repeating punctuation marks).
+- **Tradeoff:** Rather than dropping near-duplicate rows and deleting valuable customer volume data, we keep the original records intact and tag them with their corresponding **Unique Complaint Pattern** and a `complaint_count` frequency multiplier. This collapses complaint inflation for high-level pattern analysis (e.g., 100 identical complaints collapse to 1 pattern with a count of 100) while preserving full record-level granularity for sentiment calculations.
+- **Benefits:** Bypasses complex vector embedding overhead, avoids fuzzy match boundary-tuning, and provides clear, mathematically sound pattern-level vs record-level volume tracking.
 
 ### 2. Fault Tolerance & Fallback Engine
 - **Decision:** The enrichment layer supports multiple AI backends and automatically falls back to an offline classification engine if external AI services are unavailable. This ensures the pipeline executes successfully under all conditions.
